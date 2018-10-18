@@ -1,0 +1,19 @@
+---
+title: "Final Project Fairbairn"
+author: "Grant Fairbairn"
+date: "10/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(knitr)
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+##read_excel("Final Project Practice Data.xlsx")
+```
+

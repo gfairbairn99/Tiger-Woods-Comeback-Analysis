@@ -12,8 +12,10 @@ library(knitr)
 library(tidyverse)
 library(readxl)
 ```
-
+##Project Plan
 ```{r}
+#I plan on exploring this PGA tour data in hopes of finding something interesting. As it is right now, there is too much data, so I think I'm going to narrow my exploration to famous/important players in important tournaments. I plan on working with Mr. Cordeiro and Mr. George. 
+
 ##read_excel("Final Project Practice Data.xlsx")
 ```
 

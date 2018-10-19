@@ -11,11 +11,19 @@ library(dplyr)
 library(knitr)
 library(tidyverse)
 library(readxl)
+library(janitor)
 ```
 ##Project Plan
 ```{r}
-#I plan on exploring this PGA tour data in hopes of finding something interesting. As it is right now, there is too much data, so I think I'm going to narrow my exploration to famous/important players in important tournaments. I plan on working with Mr. Cordeiro and Mr. George. 
+#I plan on exploring this PGA tour data in hopes of finding something interesting. As it is right now, there is too much data, so I think I'm going to narrow my exploration to famous/important players in important tournaments. I plan on working with Mr. Cordeiro and Mr. George. For the purposes of what is due Friday, I've only presented a small portion of the data to look at. This data has 24 holes that Phil Mickelson played at the Safeway Open tournament. I'll still need to figure out what each variable is measured by, and what something like "Shot Type(S/P/D)" means. 
 
-##read_excel("Final Project Practice Data.xlsx")
+
+usable_example <- read_excel("usable example.xlsx") %>% 
+  clean_names()
+```
+
+```{r}
+usable_example %>% 
+  kable()
 ```
 

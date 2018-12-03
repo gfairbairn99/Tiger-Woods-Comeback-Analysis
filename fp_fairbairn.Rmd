@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(dplyr)
 library(knitr)
 library(tidyverse)
@@ -17,13 +17,34 @@ library(janitor)
 ```{r}
 #I plan on exploring this PGA tour data in hopes of finding something interesting. As it is right now, there is too much data, so I think I'm going to narrow my exploration to famous/important players in important tournaments. I plan on working with Mr. Cordeiro and Mr. George. For the purposes of what is due Friday, I've only presented a small portion of the data to look at. This data has 24 holes that Phil Mickelson played at the Safeway Open tournament. I'll still need to figure out what each variable is measured by, and what something like "Shot Type(S/P/D)" means. 
 
+#ive changed my project idea to work with all of tiger woods data throughout the 2017-2018 year.
 
-usable_example <- read_excel("usable example.xlsx") %>% 
+tiger <- read_excel("only_tiger.xlsx") %>% 
   clean_names()
+
+
 ```
 
 ```{r}
-usable_example %>% 
-  kable()
+tiger 
+
+graphic_1 <- tiger %>% 
+  select(round,tournament_name,hole,hole_score,par_value,yardage,shot,
+         shot_type_s_p_d,from_location_scorer,from_location_enhanced,
+         to_location_scorer,to_location_enhanced,distance,
+         distance_to_pin,distance_to_hole_after_the_shot,time,lie,distance_from_center,
+         distance_from_edge,date,left_right,strokes_gained_baseline,
+         strokes_gained_category,recovery_shot) %>% 
+  group_by(tournament_name) %>% 
+  summarize(scoring_avg = NROW(shot)/4) %>% 
+  arrange(scoring_avg) %>% 
+  filter(tournament_name != "Genesis Open")
+
+graphic_1
+
+```
+
+```{r slider data}
+
 ```
 

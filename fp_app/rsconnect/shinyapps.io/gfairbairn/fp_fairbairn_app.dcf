@@ -1,0 +1,12 @@
+name: fp_fairbairn_app
+title: fp_fairbairn_app
+username:
+account: gfairbairn
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 550996
+bundleId: 1680181
+url: https://gfairbairn.shinyapps.io/fp_fairbairn_app/
+when: 1541274025.63541
+asMultiple: FALSE
+asStatic: FALSE

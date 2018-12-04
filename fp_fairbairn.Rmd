@@ -86,9 +86,13 @@ graphic_2 <- tiger %>%
   filter(tournament_name != "Genesis Open")
 
 graphic_2 %>% 
-  ggplot(aes(x=ez_date, y=scoring_avg))+
+  ggplot(aes(x=ez_date, y=scoring_avg, colour = tournament_name== "TOUR Championship"))+
   geom_point()+
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm")+
+  scale_color_manual(values = c("black", "red"))
+
+
+                
 ```
 
 ```{r graphic_3}

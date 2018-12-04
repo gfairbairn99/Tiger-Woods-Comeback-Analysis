@@ -14,6 +14,7 @@ library(tidyverse)
 library(readxl)
 library(janitor)
 library(plotly)
+library(ggrepel)
 
 tiger <- readRDS("~/fp_fairbairn/fp_app/fp.rds")
 
@@ -23,8 +24,8 @@ tiger <- readRDS("~/fp_fairbairn/fp_app/fp.rds")
       
 
 
-ui <- navbarPage("My Application",
-             tabPanel("Component 1",
+ui <- navbarPage("Tiger Woods",
+             tabPanel("Shot Distance by Tournament",
                sidebarLayout(
                  sidebarPanel(
                    checkboxGroupInput("tournament",
@@ -44,7 +45,7 @@ ui <- navbarPage("My Application",
              ),
              
              
-             tabPanel("Component 2",
+             tabPanel("Scoring Average over Time",
                       sidebarLayout(
                         sidebarPanel(
                           #sliderInput()
@@ -55,7 +56,7 @@ ui <- navbarPage("My Application",
                       )
              ),
 
-             tabPanel("Component 3",
+             tabPanel("Proximity to Hole by Distance from Pin and Par Value",
                       sidebarLayout(
                         sidebarPanel(
                           sliderInput("range", "Range:",
@@ -81,36 +82,37 @@ server <- function(input, output) {
   output$strokes_gained <- renderPlot({
     tiger %>% 
       filter(tournament_name == input$tournament) %>% 
-      ggplot(aes(x=shot, y=strokes_gained_baseline, color = tournament_name))+
-      geom_point()+
+      ggplot(aes(x=tournament_name, y=tee_yardage, color = tournament_name))+
+      geom_violin()+
       theme_classic()+
       xlab("Shot")+
-      ylab("Strokes Gained")+
-      scale_colour_discrete(name="Tournament Name")+
-      xlim(0,8)+
-      ylim(-2,2)
+      ylab("Shot Distance")+
+      scale_colour_discrete(name="Tournament Name")
+      # xlim(0,8)+
+      # ylim(-2,2)
   })
   output$yardage <- renderPlot({
-    tiger %>% 
-      group_by(tournament_name, ez_date) %>% 
+    
+    graphic_2 <- tiger %>% 
+      group_by(tournament_name, place, ez_date) %>% 
       summarize(scoring_avg = NROW(shot)/4) %>% 
       arrange(ez_date)%>% 
-      filter(tournament_name != "Genesis Open")%>% 
-      ggplot(aes(x=ez_date, y=scoring_avg))+
+      filter(tournament_name != "Genesis Open")
+    
+    graphic_2 %>% 
+      ggplot(aes(x=ez_date, y=scoring_avg, color = tournament_name=="TOUR Championship"))+
       geom_point()+
-      geom_smooth(method = "lm") %>% 
-      add_trace(
-        text = c("text A"),
-        hoverinfo = `text`)
+      geom_smooth(method = "lm")+
+      theme_bw()+
+      theme(axis.text.x = element_blank(),
+            axis.ticks = element_blank())+
+      xlab("Date")+
+      ylab("Scoring Average")+
+      geom_label_repel(aes(label = tournament_name), size = 3, force = 3)+
+      scale_color_manual(values = c("black", "red"))+
+      theme(legend.position = "none")
   })
     output$tiger_table <- renderTable({
-      # tiger %>%
-      #   filter(proximity_yardage %in% input$range) %>%
-      #   group_by(tournament_name, date) %>%
-      #   summarize(scoring_avg = NROW(shot)) %>%
-      #   select(tournament_name, place, date) %>%
-      #   filter(! is.na(proximity_range)) %>%
-      #   arrange(proximity_range)
       
       tiger %>% 
         filter(recovery_shot == "No") %>% 
@@ -122,12 +124,15 @@ server <- function(input, output) {
         filter(par_value %in% input$par_value) %>% 
         filter(from_pin_yardage >= input$range[1],
                from_pin_yardage <= input$range[2]) %>% 
+        
         select(tournament_name, hole, feet_to_pin_after_shot, from_pin_yardage) %>% 
         arrange(feet_to_pin_after_shot) %>% 
-        filter(feet_to_pin_after_shot != 0)
-
-        
-      
+        filter(feet_to_pin_after_shot != 0) %>% 
+        mutate("Tournament Name" = tournament_name,
+               "Feet to Pin After Shot" = feet_to_pin_after_shot,
+               "Yards from Pin" = from_pin_yardage,
+               "Hole" = hole) %>%
+        select(`Tournament Name`, Hole, `Feet to Pin After Shot`, `Yards from Pin`)
  })
 }
 

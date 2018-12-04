@@ -21,30 +21,87 @@ library(janitor)
 
 tiger <- read_excel("only_tiger.xlsx") %>% 
   clean_names()
-
-
 ```
 
 ```{r}
-tiger 
+tiger$place<-NA 
 
-graphic_1 <- tiger %>% 
-  select(round,tournament_name,hole,hole_score,par_value,yardage,shot,
-         shot_type_s_p_d,from_location_scorer,from_location_enhanced,
-         to_location_scorer,to_location_enhanced,distance,
-         distance_to_pin,distance_to_hole_after_the_shot,time,lie,distance_from_center,
-         distance_from_edge,date,left_right,strokes_gained_baseline,
-         strokes_gained_category,recovery_shot) %>% 
-  group_by(tournament_name) %>% 
-  summarize(scoring_avg = NROW(shot)/4) %>% 
-  arrange(scoring_avg) %>% 
+tiger$place[tiger$tournament_name == "Farmers Insurance Open"]<-"T-23rd"
+tiger$place[tiger$tournament_name == "Genesis Open"]<-"CUT"
+tiger$place[tiger$tournament_name == "The Honda Classic"]<-"12th"
+tiger$place[tiger$tournament_name == "Valspar Championship"]<-"T-2nd"
+tiger$place[tiger$tournament_name == "Arnold Palmer Invitational presented by Mastercard"]<-"T-5th"
+tiger$place[tiger$tournament_name == "Wells Fargo Championship"]<-"T-55th"
+tiger$place[tiger$tournament_name == "THE PLAYERS Championship"]<-"T-11th"
+tiger$place[tiger$tournament_name == "the Memorial Tournament presented by Nationwide"]<-"T-23th"
+tiger$place[tiger$tournament_name == "Quicken Loans National"]<-"T-4th"
+tiger$place[tiger$tournament_name == "World Golf Championships-Bridgestone Invitational"]<-"T-31st"
+tiger$place[tiger$tournament_name == "PGA Championship"]<-"2nd"
+tiger$place[tiger$tournament_name == "THE NORTHERN TRUST"]<-"T-40th"
+tiger$place[tiger$tournament_name == "Dell Technologies Championship"]<-"T-24th"
+tiger$place[tiger$tournament_name == "BMW Championship"]<-"T-6th"
+tiger$place[tiger$tournament_name == "TOUR Championship"]<-"1st"
+
+tiger$ez_date[tiger$tournament_name == "Farmers Insurance Open"]<- 0125
+tiger$ez_date[tiger$tournament_name == "Genesis Open"]<- 0215
+tiger$ez_date[tiger$tournament_name == "The Honda Classic"]<- 0222
+tiger$ez_date[tiger$tournament_name == "Valspar Championship"]<- 0308
+tiger$ez_date[tiger$tournament_name == "Arnold Palmer Invitational presented by Mastercard"]<- 0315
+tiger$ez_date[tiger$tournament_name == "Wells Fargo Championship"]<- 0503
+tiger$ez_date[tiger$tournament_name == "THE PLAYERS Championship"]<- 0510
+tiger$ez_date[tiger$tournament_name == "the Memorial Tournament presented by Nationwide"]<- 0531
+tiger$ez_date[tiger$tournament_name == "Quicken Loans National"]<- 0628
+tiger$ez_date[tiger$tournament_name == "World Golf Championships-Bridgestone Invitational"]<- 0802
+tiger$ez_date[tiger$tournament_name == "PGA Championship"]<- 0809
+tiger$ez_date[tiger$tournament_name == "THE NORTHERN TRUST"]<- 0823
+tiger$ez_date[tiger$tournament_name == "Dell Technologies Championship"]<- 0831
+tiger$ez_date[tiger$tournament_name == "BMW Championship"]<- 0906
+tiger$ez_date[tiger$tournament_name == "TOUR Championship"]<- 0920
+
+# #=tiger %>%
+#  # separate(date, c("year", "month", "day"), sep = "-") %>%
+#   select(-year) %>%
+#   unite(date, c("month","day"), sep = "")
+
+tiger <- tiger %>%
+  mutate(tee_yardage = distance/36,
+         from_pin_yardage = distance_to_pin/36,
+         feet_to_pin_after_shot = distance_to_hole_after_the_shot/12
+         )
+
+
+tiger$par_value <- as.character(tiger$par_value)
+tiger$hole <- as.character(tiger$hole)
+
+tiger
+
+write_rds(tiger,"fp_app/fp.rds",compress="none")
+```
+
+```{r graphic_2}
+graphic_2 <- tiger %>% 
+  group_by(tournament_name, place, ez_date) %>% 
+  summarize(scoring_avg = NROW(shot)) %>% 
+  arrange(ez_date)%>% 
   filter(tournament_name != "Genesis Open")
 
-graphic_1
-
+graphic_2 %>% 
+  ggplot(aes(x=ez_date, y=scoring_avg))+
+  geom_point()+
+  geom_smooth(method = "lm")
 ```
 
-```{r slider data}
+```{r graphic_3}
+graphic_3 <- tiger %>% 
+  filter(recovery_shot == "No") %>% 
+  mutate(keep = case_when(par_value == 3 & shot== 1 ~ "keep",
+                   par_value == 4 & shot == 2 ~ "keep",
+                   par_value == 5 & shot == 3 ~ "keep",
+                   TRUE ~ "delete")) %>% 
+  filter(keep=="keep")
 
+
+graphic_3
 ```
+
 

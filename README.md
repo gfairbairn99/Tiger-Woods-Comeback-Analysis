@@ -25,6 +25,6 @@ terminology, and Tiger's history in the sport:
 I analyzed these data in three main ways. First, I vizualized tiger's shot data to show the frequency of distances he had for each tournament. By judging these results in relationship to how well he played, the data suggests that Tiger plays some of his best golf when he isn't hitting the ball the furthest he can. Perhaps laying back on distance helps him hit more fairways, thus giving him more opportunities to hit greens and make birdies. Second, when graphing tournament scoring average by date, a clear trend appears. As the year progressed, Tiger's scoring average continued to drop. This ultimately culminated in his victory at the final event of the year. Lastly, Tiger had an amazing ball striking year. To show this, I created an interactive table to show Tiger's best shots from various distances. Most famously in this table is Tiger's wedge shot on the 11th hole at the Memorial Tournament presented by Nationwide.
 
 ### Link to Shiny App Website
-(https://gfairbairn.shinyapps.io/fp_fairbairn_app/)
+https://gfairbairn.shinyapps.io/fp_fairbairn_app/
 
 Created by Grant Fairbairn as a Harvard University GOV 1005 Final Project

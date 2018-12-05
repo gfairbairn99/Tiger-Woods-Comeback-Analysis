@@ -1,15 +1,15 @@
 # Tiger-Woods-Comeback-Stats
 Tiger Woods PGA data
 
-# Topic
+### Topic
 
 This is an analysis of Tiger Woods and his statistics collected from PGA Tour events this year.
 
-# Motivation
+### Motivation
 
 As a member of the Harvard Men's Golf Team, I have a deep passion for the game. Since Tiger Woods is one of the most famous athletes in the world, I wanted to see what parts of his game led to the tremendous come-back season he had this year. I was most curious to track certain statistics that excellent golfers perform well on throughout all of his starts.
 
-# Background Info
+### Background Info
 
 The following are links that are useful to those who are unfamiliar with basic information about the game, golf related 
 terminology, and Tiger's history in the sport:
@@ -20,5 +20,5 @@ terminology, and Tiger's history in the sport:
 
 [Tiger Bio](https://tigerwoods.com/biography/)
 
-# Summary
+### Summary
 

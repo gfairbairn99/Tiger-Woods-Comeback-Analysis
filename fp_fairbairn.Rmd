@@ -22,7 +22,9 @@ library(janitor)
 #2 Things have changed since my project proposal. 1) I am no longer working in a group with Mr. George and Mr. Cordeiro, it just didn't make sense for the project. We got the data from the same source, but I believe we chose somewhat different data sets, as well as chose to look at different variables. 2) I chose to look at specfically Tiger Woods PGA data for my project.
 
 tiger <- read_excel("only_tiger.xlsx") %>% 
-  
+
+#I had to take data from the PGA Tour website and download a copy in case they removed it. Funny thing is, when I went back to check, I didn't have access to download data anymore!
+
   #using clean_names() is super helpful to make variable names more compatible for using. There were lots of messed up variable names
   
   clean_names()

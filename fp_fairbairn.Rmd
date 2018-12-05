@@ -25,7 +25,9 @@ tiger <- read_excel("only_tiger.xlsx") %>%
 
 #I had to take data from the PGA Tour website and download a copy in case they removed it. Funny thing is, when I went back to check, I didn't have access to download data anymore!
 
-  #using clean_names() is super helpful to make variable names more compatible for using. There were lots of messed up variable names
+#using clean_names() is super helpful to make variable names more compatible for using. There were lots of messed up variable names
+
+#one thing to note about the data, while I know that some of the names look funny, like capitalization, or sponsors in the name, these are the official names of the tournaments. For example, the tournament called the THE NORTHERN TRUST is called exactly that on the PGA website. Another example is the Arnold Palmer Invitational presented by Mastercard. This full name appears in all searches for the tournament on the PGA website. Since this project is tailored for people with a fair amount of golf knowledge (while still can be understood by people without golf knowledge), I think it is fair that I maintain the actual names of the events.
   
   clean_names()
 ```

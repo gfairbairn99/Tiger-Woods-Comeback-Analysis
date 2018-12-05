@@ -15,7 +15,9 @@ The following are links that are useful to those who are unfamiliar with basic i
 terminology, and Tiger's history in the sport:
 
 [About the Game](http://news.bbc.co.uk/sport2/hi/golf/rules_and_equipment/4230206.stm)
+
 [Golf Terminology](https://bleacherreport.com/articles/1626046-tiger-woods-five-stats-every-golfer-)
+
 [Tiger Bio](https://tigerwoods.com/biography/)
 
 # Summary

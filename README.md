@@ -3,11 +3,11 @@ Tiger Woods PGA data
 
 ### Topic
 
-This is an analysis of Tiger Woods and his statistics collected from PGA Tour events this year.
+This year Tiger Woods completed perhaps the greatest comeback in sports history. After numerious career ending incidents and injuries, he managed to find his 80th career victory. This is an analysis of Tiger Woods and his statistics collected from PGA Tour events this year.
 
 ### Motivation
 
-As a member of the Harvard Men's Golf Team, I have a deep passion for the game. Since Tiger Woods is one of the most famous athletes in the world, I wanted to see what parts of his game led to the tremendous come-back season he had this year. I was most curious to track certain statistics that excellent golfers perform well on throughout all of his starts.
+As a member of the Harvard Men's Golf Team, I have a deep passion for the game of golf. Since Tiger Woods is one of the most famous athletes in the world, I wanted to see what parts of his game led to the tremendous comeback season he had this year. I was most curious to see which his strongest statistics were throughout all of his starts since I wasn't following him back in his prime years.
 
 ### Background Info
 

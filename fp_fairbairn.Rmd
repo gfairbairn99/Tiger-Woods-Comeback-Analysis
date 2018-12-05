@@ -12,6 +12,8 @@ library(knitr)
 library(tidyverse)
 library(readxl)
 library(janitor)
+
+#helpful libraries I need for this project
 ```
 ##Project Plan
 ```{r}

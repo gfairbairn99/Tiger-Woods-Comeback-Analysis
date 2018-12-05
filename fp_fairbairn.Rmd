@@ -17,14 +17,19 @@ library(janitor)
 ```{r}
 #I plan on exploring this PGA tour data in hopes of finding something interesting. As it is right now, there is too much data, so I think I'm going to narrow my exploration to famous/important players in important tournaments. I plan on working with Mr. Cordeiro and Mr. George. For the purposes of what is due Friday, I've only presented a small portion of the data to look at. This data has 24 holes that Phil Mickelson played at the Safeway Open tournament. I'll still need to figure out what each variable is measured by, and what something like "Shot Type(S/P/D)" means. 
 
-#ive changed my project idea to work with all of tiger woods data throughout the 2017-2018 year.
+#2 Things have changed since my project proposal. 1) I am no longer working in a group with Mr. George and Mr. Cordeiro, it just didn't make sense for the project. We got the data from the same source, but I believe we chose somewhat different data sets, as well as chose to look at different variables. 2) I chose to look at specfically Tiger Woods PGA data for my project.
 
 tiger <- read_excel("only_tiger.xlsx") %>% 
+  
+  #using clean_names() is super helpful to make variable names more compatible for using. There were lots of messed up variable names
+  
   clean_names()
 ```
 
 ```{r}
 tiger$place<-NA 
+
+#I wanted to make a variable that held what place tiger finished in the tournament, NA fills place variable before I put in his finishes
 
 tiger$place[tiger$tournament_name == "Farmers Insurance Open"]<-"T-23rd"
 tiger$place[tiger$tournament_name == "Genesis Open"]<-"CUT"
@@ -42,6 +47,10 @@ tiger$place[tiger$tournament_name == "Dell Technologies Championship"]<-"T-24th"
 tiger$place[tiger$tournament_name == "BMW Championship"]<-"T-6th"
 tiger$place[tiger$tournament_name == "TOUR Championship"]<-"1st"
 
+#all the code above is me assigning the place he had to each tournament.
+
+#I didn't want to use separate and unite like on the midterm to get the dates correct, instead because there were only a couple of tournaments I manually assinged them dates which were easy to use in arrange.
+
 tiger$ez_date[tiger$tournament_name == "Farmers Insurance Open"]<- 0125
 tiger$ez_date[tiger$tournament_name == "Genesis Open"]<- 0215
 tiger$ez_date[tiger$tournament_name == "The Honda Classic"]<- 0222
@@ -58,54 +67,115 @@ tiger$ez_date[tiger$tournament_name == "Dell Technologies Championship"]<- 0831
 tiger$ez_date[tiger$tournament_name == "BMW Championship"]<- 0906
 tiger$ez_date[tiger$tournament_name == "TOUR Championship"]<- 0920
 
-# #=tiger %>%
-#  # separate(date, c("year", "month", "day"), sep = "-") %>%
+#I played around with separate and unite, but it was easier to just assign the tournaments the dates in the manner above
+
+# tiger %>%
+#  separate(date, c("year", "month", "day"), sep = "-") %>%
 #   select(-year) %>%
 #   unite(date, c("month","day"), sep = "")
 
 tiger <- tiger %>%
+  
+  #I wanted three more variables because the ones in the data were measured in inches which is super weird.
+  
   mutate(tee_yardage = distance/36,
+         
+         #tee_yardage is going to be a variable for how long Tiger hits the ball on his first shot, divided by 36 to get yards
+         
          from_pin_yardage = distance_to_pin/36,
-         feet_to_pin_after_shot = distance_to_hole_after_the_shot/12
-         )
+         
+         #from_pin_yardage is going to be a variable that measures how far Tiger was from pin on a shot, divided by 36 to get yards
+         
+         feet_to_pin_after_shot = distance_to_hole_after_the_shot/12)
 
+         #feet_to_pin_after_shot is going to be a variable that measure how close Tiger hit it. This is generally measured in feet, so divided by 12
 
 tiger$par_value <- as.character(tiger$par_value)
+
+#When in shiny my par_value was given 2 unnecessary digits. Since I didnt need it as a numerical value, I changed it to character so this wouldn't happen
+
 tiger$hole <- as.character(tiger$hole)
 
-tiger
+#When in shiny my hole was given 2 unnecessary digits. Since I didnt need it as a numerical value, I changed it to character so this wouldn't happen
 
 write_rds(tiger,"fp_app/fp.rds",compress="none")
+
+#this line feeds this data manipulation to my shiny app
 ```
 
 ```{r graphic_2}
 graphic_2 <- tiger %>% 
   group_by(tournament_name, place, ez_date) %>% 
-  summarize(scoring_avg = NROW(shot)) %>% 
+  
+  #I want a data set grouped by tournament name, place, and my date to make a graph about scoring avg by date
+  
+  summarize(scoring_avg = NROW(shot)/4) %>% 
+  
+  #scoring_avg takes all of Tigers shots hit for a tournament, and divides by number of rounds (4) to give his scoring average for the tournament
+  
   arrange(ez_date)%>% 
+  
+  #arranging by date for simplicity
+  
   filter(tournament_name != "Genesis Open")
 
+  #tiger missed the cut in this tournament (meaning there were only 2 rounds), so I chose to ignore it because it isn't a full tournament
+
 graphic_2 %>% 
+  
+  #just testing the graph I will make in shiny
+  
   ggplot(aes(x=ez_date, y=scoring_avg, colour = tournament_name== "TOUR Championship"))+
+  
+  #plotting scoring average by date, the tricky part here was I wanted his winning tournament to be colored red
+  
   geom_point()+
+  
+  #Best way to represent data was scatter plot
+  
   geom_smooth(method = "lm")+
+  
+  #added the line to help visualize how his scoring average went down over time
+  
   scale_color_manual(values = c("black", "red"))
 
-
-                
+  #tigers colors are black and red, assigned red to winning tournament
 ```
 
 ```{r graphic_3}
 graphic_3 <- tiger %>% 
+  
+  #creating the interactive table for my last portion of the app
+  
   filter(recovery_shot == "No") %>% 
+  
+  #I don't want to count recovery shots because they arent intended to hit the green and would be very far from the hole
+  
+  #This mutate is because I want only the approach shots out of the data. These are shots intended to hit green. Generally speaking, this means the first shot of par 3's, 2nd of par 4's, and 3rd of par 5's (while sometimes the second of par 5's but those aren't very accurate).
+  
   mutate(keep = case_when(par_value == 3 & shot== 1 ~ "keep",
-                   par_value == 4 & shot == 2 ~ "keep",
-                   par_value == 5 & shot == 3 ~ "keep",
-                   TRUE ~ "delete")) %>% 
+                          
+                          #this case when keeps the 1st shot of par 3's 
+                          
+                          par_value == 4 & shot == 2 ~ "keep",
+                          
+                          #this case when keeps the 2nd shot of par 4's
+                          
+                          par_value == 5 & shot == 3 ~ "keep",
+                          
+                          #this case when keeps the 3rd shot of par 5's
+                          
+                          TRUE ~ "delete")) %>% 
+                            
+                          #deletes all other shots because I don't want them
+  
   filter(keep=="keep")
 
+  #keeps all the shots assinged to keep by my case when, removes all the deletes
 
 graphic_3
+
+#testing it worked how I wanted
 ```
 
 

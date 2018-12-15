@@ -41,7 +41,7 @@ ui <- navbarPage(theme = shinytheme("spacelab"),
                     
                    #this checkbox input portion will allow people to select which tournaments they want to add to the graphic
                    
-                                      "Tournament Name",
+                                      "Graph 1 Tournament Name",
                                       choices = c("Farmers Insurance Open", "Genesis Open",
                                                   "The Honda Classic", "Valspar Championship",
                                                   "Arnold Palmer Invitational presented by Mastercard",
@@ -53,14 +53,38 @@ ui <- navbarPage(theme = shinytheme("spacelab"),
                                       
                                       #these are all the tournaments that people can choose from
                    
-                                      selected = c("Farmers Insurance Open", "TOUR Championship"))
+                                      selected = c("Farmers Insurance Open", "TOUR Championship")),
+                   
+                   checkboxGroupInput("tournament_2",
+                                      
+                                      #this checkbox input portion will allow people to select which tournaments they want to add to the graphic
+                                      
+                                      "Graph 2 Tournament Name",
+                                      choices = c("Farmers Insurance Open", "Genesis Open",
+                                                  "The Honda Classic", "Valspar Championship",
+                                                  "Arnold Palmer Invitational presented by Mastercard",
+                                                  "Wells Fargo Championship", "THE PLAYERS Championship",
+                                                  "the Memorial Tournament presented by Nationwide",
+                                                  "Quicken Loans National", "World Golf Championships-Bridgestone Invitational",
+                                                  "PGA Championship", "THE NORTHERN TRUST", "Dell Technologies Championship",
+                                                  "BMW Championship", "TOUR Championship"),
+                                      
+                                      #these are all the tournaments that people can choose from
+                                      
+                                      selected = c("PGA Championship", "World Golf Championships-Bridgestone Invitational"))
                       
                                       #guiding people to interesting findings when they first open the app
                    
                   ),
+                
+                 
                  mainPanel(
                    h2("Shot Distance by Shot Frequency"),
                    plotOutput("strokes_gained"),
+                   
+                   #I wanted 2 graphs to guide readers to my intersting findings while still giving them the option to explore on their own
+                   
+                   plotOutput("strokes_gained_2"),
                    h3("Information"),
                    h5("Most golf shots are hit in three different ranges of distances: tee shots, approach shots, and short game.
                       Usually during a golf round, just under half of the total strokes are hit under the short game category.
@@ -79,7 +103,8 @@ ui <- navbarPage(theme = shinytheme("spacelab"),
                    
                    h5("Another interesting tournament comparison to note is between the PGA Championship where Tiger finished 2nd, and the World Golf Championship-Bridgestone Invitational where Tiger averaged his longest shot distance all season.
                       Despite hitting the ball further, he played better in relationship to the field at the PGA Championship.
-                      One possible explination for the discrepancy in distance could be warmer conditions, or higher altitude."))
+                      One possible explination for the discrepancy in distance could be warmer conditions, or higher altitude.
+                      Both of these factors allow players to hit the bar substantially further."))
                )
              ),
              
@@ -103,7 +128,7 @@ ui <- navbarPage(theme = shinytheme("spacelab"),
                              First off, while scoring average isn't a direct indicator of tournament success, the two are very highly correlated.
                              Secondly, while not all tournaments are the same difficulty, and not all courses have the same par values, on the whole, they are similar enough where a comparison like this is acceptable.
                              Throughout the year, Tiger insisted that his game was slowly returning and that he just need more time to adjust.
-                             Skeptics remained doubtful as his return was filled with rocky performances.
+                             Skeptics remained doubtful as his return started with rocky performances.
                              However, as the year continued, Tiger continued to improve his game and posted better and better results in tournaments.
                              The world was shocked when Tiger finally had his comeback victory at the TOUR Championship (marked in red), but for anyone paying attention as this graph shows, it wasn't a surprise at all.")
                           )
@@ -149,7 +174,7 @@ ui <- navbarPage(theme = shinytheme("spacelab"),
                             h2("Approach Shot Proximity to Hole based on Distance to Pin and Par Value"),
                             h3("Information"),
                             h5("Part of Tiger's incredible season this year was really great approach shots.
-                               For the purposes of simplicity, I've define an approach shot as the first shot on par 3's, second shot on par 4's, and third shot on par 5's with the exclusion of recovery shots (no intention of hitting the green).
+                               For the purposes of simplicity, I've define an approach shot as the first shot on par 3's, second shot on par 4's, and third shot on par 5's with the exclusion of recovery shots (shots with no intention of hitting the green).
                                Use the slider on the left to see Tiger's best shots from a certain range of yardages, and use the drop down to select the par value.
                                To see something truly amazing set the range to include 95 yards, set the par value to 5, then click on the link below.
                                One interesting thing to note about Tiger's proximity to pin is that he hit the more shots to within 10 feet on par 4's than he did on par 3's and par 5's combined."),
@@ -183,9 +208,13 @@ server <- function(input, output, session) {
       
       filter(tournament_name == input$tournament) %>% 
       
+      mutate(Tournament = tournament_name) %>% 
+      
+      #for some reason guide_legend(title = "") wasnt working, so I'm mutating intstead to change the name
+      
       #creating my ggplot, color by tournament name so people dont get confused which tournament is which
       
-      ggplot(aes(x=tournament_name, y=tee_yardage, color = tournament_name))+
+      ggplot(aes(x=tournament_name, y=tee_yardage, color = Tournament))+
       
       #chose to use violin plot because it was the best at showing distribution of shots. Second best was jitter, but it was harder to see what the data was saying
       
@@ -204,6 +233,40 @@ server <- function(input, output, session) {
       ylab("Shot Distance (yards)")
 
   })
+  
+  output$strokes_gained_2 <- renderPlot({
+    tiger %>% 
+      
+      #I wanted people to be able to select the tournament they wanted to see, so filtering by the input does this
+      
+      filter(tournament_name == input$tournament_2) %>% 
+      
+      mutate(Tournament = tournament_name) %>% 
+      
+      #for some reason guide_legend(title = "") wasnt working, so I'm mutating intstead to change the name
+      
+      #creating my ggplot, color by tournament name so people dont get confused which tournament is which
+      
+      ggplot(aes(x=tournament_name, y=tee_yardage, color = Tournament))+
+      
+      #chose to use violin plot because it was the best at showing distribution of shots. Second best was jitter, but it was harder to see what the data was saying
+      
+      geom_violin()+
+      
+      #cool, simple looking theme for my graphic
+      
+      theme_classic()+
+      
+      #renaming my labels more appropriately
+      
+      xlab("Shot Frequency")+
+      
+      #renaming my labels more appropriately
+      
+      ylab("Shot Distance (yards)")
+    
+  })
+  
   output$yardage <- renderPlot({
     
     #this is my second graphic
